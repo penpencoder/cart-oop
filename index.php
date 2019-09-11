@@ -49,7 +49,7 @@
                         <td><?php echo $row["price"];?></td>
                         <td><button><a href="index.php?delete=<?php echo $row["id"];?>">Delete</a></button></td>
                         <td><button><a href="index.php?update=<?php echo $row["id"];?>">Edit</a></button></td>
-                        <td><button><a href="index.php?add=<?php echo $row["id"];?>">Add</a></button></td>
+                        <!-- <td><button><a href="index.php?add=<?php //echo $row["id"];?>">Add</a></button></td> -->
                         <td>
                         <form method="post" action="">
                             <input type="hidden" class="product-quantity" name="action" value="add" />
