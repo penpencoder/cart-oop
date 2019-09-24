@@ -1,7 +1,7 @@
 <?php
-    include 'model/MyModel.php';
+    include 'model/model.php';
+    // include 'model/MyModel.php';
     include 'controller/productsController.php';
-    include 'controller/cartController.php';
 ?>
 
 
@@ -35,7 +35,7 @@
                 <tbody>
                     <?php
                         $data = new Products;
-                        $rows = $data->getProducts(); 
+                        $rows = $data->getAllProducts(); 
                         foreach($rows as $key => $row){
                         //break
                     ?>

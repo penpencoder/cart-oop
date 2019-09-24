@@ -23,7 +23,7 @@ class Cart extends MyModel{
         while($data = mysqli_fetch_assoc($result)){
             $array[] = $data;
         }
-        var_dump($array);
+        //var_dump($array);
         return $array;
     }
 

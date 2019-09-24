@@ -1,19 +1,12 @@
 <?php
-include '../model/MyModel.php';
+include '../model/model.php';
 
-class Products extends MyModel{
+class Products extends Model{
 
-    public function getProducts(){
-        $sql = "SELECT * FROM products";
-        $array = array();
-        $result = mysqli_query($this->connect(), $sql);
-
-
-        while($data = mysqli_fetch_assoc($result)){
-            $array[] = $data;
-        }
-        //var_dump($array);
-        return $array;
+    public function getAllProducts(){
+        $result = $this->table('products')->getAll(); 
+        $rowVals = mysqli_fetch_assoc($result);
+        var_dump($rowVals);
     }
 
     public function getItem($code){
@@ -30,14 +23,25 @@ class Products extends MyModel{
     public function insertProducts($datas){
 
         $target = "../assets/images/products/" . basename($_FILES['image']['name']);
-        
-        $sql .= "INSERT INTO products";
-        $sql .= " (" . implode("," , array_keys($datas)) . ") VALUES ";
-        $sql .= "('" . implode("','", array_values($datas)) . "')";
 
-        $result = mysqli_query($this->connect(), $sql);
+            //add
+        if(isset($_POST['submit'])){
+
+        //$target = "../assets/images/products";
         
-        if($result){
+        $myArray = array(
+            "image" => $_FILES["image"]['name'],
+            "sku" => $_POST["sku"],
+            "name" => $_POST["name"],
+            "color" => $_POST["color"],
+            "size" => $_POST["size"],
+            "price" => $_POST["price"],
+        );
+
+        $this->insert('products', $myArray);
+    }
+        
+        if($this){
             move_uploaded_file($_FILES['image']['tmp_name'], $target);
             header("Location: ../index.php");
         }
@@ -73,23 +77,6 @@ class Products extends MyModel{
 
     $prod = new Products;
 
-    //add
-    if(isset($_POST['submit'])){
-
-        //$target = "../assets/images/products";
-        
-        $myArray = array(
-            "image" => $_FILES["image"]['name'],
-            "sku" => $_POST["sku"],
-            "name" => $_POST["name"],
-            "color" => $_POST["color"],
-            "size" => $_POST["size"],
-            "price" => $_POST["price"],
-        );
-        //var_dump($myArray);
-        $prod->insertProducts($myArray);
-    }
-
     // edit
     if(isset($_POST['edit'])){
         $id = $_POST['id'];
@@ -109,3 +96,6 @@ class Products extends MyModel{
 
         $prod->deleteProducts($id);
     }
+
+
+$prod -> getAllProducts();
