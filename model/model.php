@@ -11,6 +11,7 @@ class Model extends MyModel{
     public $join;
     public $insert;
     public $update;
+    public $delete;
 
     public function __construct(){
         $this->condition = '';
@@ -19,6 +20,7 @@ class Model extends MyModel{
         $this->join = '';
         $this->insert = '';
         $this->update = '';
+        $this->delete = '';
     }
 
     
@@ -35,16 +37,24 @@ class Model extends MyModel{
 
     public function getAll(){
         $sql = "SELECT " . $this->select . " FROM " . "'" . $this->table . "'";
-        return $this->connect()->query($sql);
-        // print_r($sql);
+        $result = $this->connect()->query($sql);
+        $rows = $result->num_rows;
+        if($rows > 0){
+            while($row = $result->fetch_assoc()){
+                $data[] = $row;
+            }
+            var_dump($data);
+        }
+        
     }
 
     public function get($type = ''){
         
-        $query = 'Select '.$this->select.' FROM '.$this->table. ' '.$this->join.' '.$this->condition;
+        $query = 'SELECT '.$this->select.' FROM '.$this->table. ' '.$this->join.' '.$this->condition;
     
-        return $type != '' ?  $this->connect()->query($query)->fetch_assoc() : $this->connect()->query($query)->fetch_All(MYSQLI_ASSOC);
+        //return $type != '' ?  $this->connect()->query($query)->fetch_assoc() : $this->connect()->query($query)->fetch_All(MYSQLI_ASSOC);
         
+        print_r($query);
     }
 
     public function condition(...$condtions){
@@ -57,44 +67,44 @@ class Model extends MyModel{
         return $this;
     }
 
-    public function join($tbljoin,$tbljoinFiled,$tbtojoinField){
-        $this->join = 'Join '.$tbljoin.' on '.$tbljoinFiled. ' = '.$tbtojoinField;
+    public function join($tbl, $tbljoinFiled,$tbtojoinField){
+        $this->join = 'JOIN '.$tbl.' ON '.$tbljoinFiled. ' = '.$tbtojoinField;
 
         return $this;
     }
 
-    public function insert($table, $tbltoInsert){
+    public function insert($values){
 
-        $this->insert .= "INSERT INTO " . $table;
-        $this->insert .= " (" . implode("," , array_keys($tbltoInsert)) . ") VALUES ";
-        $this->insert .= "('" . implode("','", array_values($tbltoInsert)) . "')";
+        $this->insert .= "INSERT INTO " . $this->tables;
+        $this->insert .= " (" . implode("," , array_keys($values)) . ") VALUES ";
+        $this->insert .= "('" . implode("','", array_values($value)) . "')";
         
         return $this->connect()->$this;
     }
 
-    public function update($table, $values, $tblPK, $tblID){
+    public function update($values){
 
-        $this->update .= "UPDATE " . $table . " SET ";
+        $this->update .= "UPDATE " . $this->table . " SET ";
         foreach($values as $key => $val){
             $this->update .= $key . " = '" . $val . "', ";
         }
-        $this->update .= "WHERE " . $tblPK . " = '" . $tblID . "'";
-        return $this->connect()->$this;
+        $this->update .= $this->condition;
+        //return $this->connect()->$this;
+        print_r($this->update);
+    }
+
+    public function delete(){
+        $this->delete = "DELETE FROM " . $this->table;
+        $this->delete .= $this->condition;
+
+        print_r($this->delete);
     }
     
 
 
 }
-    // join table_name on table_name.field = table_uppe.field
-    $data = new model();
-    //$values = $data->table('products')->get();
-    // echo '<pre>';
-    // print_r($values);
-    // echo '</pre>';
-
-    // foreach($values as $value){
-    //     echo $value['name'].'<br>';
-    // }
+    $test = new Model;
+  
 
     $products = array(
         'name'=> 'stephen',
@@ -103,6 +113,8 @@ class Model extends MyModel{
         'size'=> '150g'
     );
     
-
-
-    // $data->table('products')->getAll();
+    $test->table('products')->getAll();
+    // foreach($datas as $data){
+    //     echo $data['name'];
+    //     echo $data['sku'];
+    // }
