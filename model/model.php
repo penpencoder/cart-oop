@@ -36,15 +36,9 @@ class Model extends MyModel{
     }
 
     public function getAll(){
-        $sql = "SELECT " . $this->select . " FROM " . "'" . $this->table . "'";
-        $result = $this->connect()->query($sql);
-        $rows = $result->num_rows;
-        if($rows > 0){
-            while($row = $result->fetch_assoc()){
-                $data[] = $row;
-            }
-            var_dump($data);
-        }
+        $sql = "SELECT {$this->select} FROM {$this->table}";
+        $result = $this->connect()->query($sql)->fetch_all(MYSQLI_ASSOC);
+        return $result;
         
     }
 
@@ -79,7 +73,7 @@ class Model extends MyModel{
         $this->insert .= " (" . implode("," , array_keys($values)) . ") VALUES ";
         $this->insert .= "('" . implode("','", array_values($value)) . "')";
         
-        return $this->connect()->$this;
+        return $this->connect()->query($this);
     }
 
     public function update($values){
@@ -99,22 +93,5 @@ class Model extends MyModel{
 
         print_r($this->delete);
     }
-    
-
 
 }
-    $test = new Model;
-  
-
-    $products = array(
-        'name'=> 'stephen',
-        'color'=> 'red',
-        'test'=> 'test',
-        'size'=> '150g'
-    );
-    
-    $test->table('products')->getAll();
-    // foreach($datas as $data){
-    //     echo $data['name'];
-    //     echo $data['sku'];
-    // }
